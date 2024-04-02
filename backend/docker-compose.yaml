@@ -1,0 +1,19 @@
+services:
+  url-shoretener-backend:
+    build:
+      context: ./
+      dockerfile: ./url-shortener-backend/Dockerfile
+    container_name: url-shortener-backend-serving
+    environment:
+      - PYTHONUNBUFFERED=1
+      - OMP_NUM_THREADS=1
+    ports:
+      - "${DOCKER_IP:-127.0.0.1}:${URL_SHORTENER_BACKEND_PORT:-8810}:8810"
+    restart: on-failure:5
+    read_only: true
+    mem_limit: ${MEMORY_LIMIT:-3000M}
+    pids_limit: 100
+    env_file:
+      - .env
+    volumes:
+      - ./url-shortener-backend:/app

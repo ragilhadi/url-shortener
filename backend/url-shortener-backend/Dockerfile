@@ -7,11 +7,11 @@ RUN apt-get update && \
 
 WORKDIR /app
 
-COPY ./object-detection/requirements.txt .
+COPY ./url-shortener-backend/requirements.txt .
 
 RUN pip install --no-cache-dir -r requirements.txt
 
-COPY ./object-detection .
+COPY ./url-shortener-backend .
 
 HEALTHCHECK --interval=1m --timeout=1m --start-period=5s --retries=3 \
 CMD curl --fail http://localhost:8810/health || exit 1

@@ -27,21 +27,21 @@ response_handler: ResponseHandler = ResponseHandler()
 url_action: URLAction = URLAction()
 
 
-@scheduler.task("interval", id="do_job_1", seconds=5)
-def job1():
-    with open("data.json", "r", encoding="utf-8") as file:
-        data = json.load(file)
-    print(datetime.now())
-    for user in data:
-        valid_until = user.get("valid_until")
-        valid_until =  datetime.strptime(valid_until, '%d-%m-%y %H:%M:%S')
-        if valid_until < datetime.now():
-            data.remove(user)
-            print(f"Removed {user.get('url')}")
-        else:
-            print(f"Valid {user.get('url')}")
-    with open("data.json", "w", encoding="utf-8") as file:
-        json.dump(data, file, ensure_ascii=False, indent=4)
+# @scheduler.task("interval", id="do_job_1", seconds=5)
+# def job1():
+#     with open("data.json", "r", encoding="utf-8") as file:
+#         data = json.load(file)
+#     print(datetime.now())
+#     for user in data:
+#         valid_until = user.get("valid_until")
+#         valid_until =  datetime.strptime(valid_until, '%d-%m-%y %H:%M:%S')
+#         if valid_until < datetime.now():
+#             data.remove(user)
+#             print(f"Removed {user.get('url')}")
+#         else:
+#             print(f"Valid {user.get('url')}")
+#     with open("data.json", "w", encoding="utf-8") as file:
+#         json.dump(data, file, ensure_ascii=False, indent=4)
 
 
 @app.route("/url", methods=["GET"], provide_automatic_options=False)
@@ -57,9 +57,13 @@ def get_url() -> Tuple[dict, int]:
         if result:
             return response_handler.get_success_response({"database_count": count})
         else:
-            return response_handler.get_error_response(reason="Internal server error", error_code=500)
+            return response_handler.get_error_response(
+                reason="Internal server error", error_code=500
+            )
     except FileNotFoundError:
-        return response_handler.get_error_response(reason="File not found", error_code=404)
+        return response_handler.get_error_response(
+            reason="File not found", error_code=404
+        )
 
 
 @app.route("/url/<id_url>", methods=["GET"], provide_automatic_options=False)
@@ -74,10 +78,14 @@ def get_url_id(id_url) -> Tuple[dict, int]:
         result, data = url_action.get_url_by_id(id_url)
         if result:
             if data is None:
-                return response_handler.get_error_response(reason="URL not found", error_code=404)
+                return response_handler.get_error_response(
+                    reason="URL not found", error_code=404
+                )
             return response_handler.get_url_id_response(data)
         else:
-            return response_handler.get_error_response(reason="Internal server error", error_code=500)
+            return response_handler.get_error_response(
+                reason="Internal server error", error_code=500
+            )
     except Exception as e:
         return response_handler.get_error_response(reason=e, error_code=404)
 
@@ -91,15 +99,21 @@ def add_url() -> Tuple[dict, int]:
         Tuple[dict, int]: A tuple containing the response and HTTP status code.
     """
     try:
-        content_type = request.headers.get('Content-Type')
-        if (content_type == 'application/json'):
+        content_type = request.headers.get("Content-Type")
+        if content_type == "application/json":
             user = request.json
-            url_action.add_url(user.get("url"), user.get("url_short"), user.get("valid_until"))
+            url_action.add_url(
+                user.get("url"), user.get("url_short"), user.get("valid_until")
+            )
             return response_handler.get_success_response("")
         else:
-            return response_handler.get_error_response(reason="Invalid content type", error_code=400)
+            return response_handler.get_error_response(
+                reason="Invalid content type", error_code=400
+            )
     except FileNotFoundError:
-        return response_handler.get_error_response(reason="File not found", error_code=404)
+        return response_handler.get_error_response(
+            reason="File not found", error_code=404
+        )
 
 
 @app.route("/health", methods=["GET"], provide_automatic_options=False)

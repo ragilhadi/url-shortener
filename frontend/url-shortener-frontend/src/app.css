@@ -1,0 +1,18 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+    --date-picker-background: hsl(var(--b1));
+    --date-picker-foreground: hsl(var(--bc));
+    --date-picker-highlight-border: hsl(var(--s));
+    --date-picker-highlight-shadow: hsl(var(--s));
+    --date-picker-selected-color: hsl(var(--s));
+    --date-picker-selected-background: hsl(var(--p));
+}
+
+div .date-time-field input {
+    border-radius: 0.5rem;
+    padding: 0 1rem;
+    height: 3rem;
+}

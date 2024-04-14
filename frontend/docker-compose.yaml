@@ -1,0 +1,14 @@
+services:
+  url-shoretener-frontend:
+    build:
+      context: ./
+      dockerfile: ./url-shortener-frontend/Dockerfile
+    container_name: url-shortener-frontend-serving
+    ports:
+      - 3000:3000
+    restart: on-failure:5
+    read_only: true
+    mem_limit: ${MEMORY_LIMIT:-3000M}
+    pids_limit: 100
+    volumes:
+      - ./url-shortener-frontend:/app

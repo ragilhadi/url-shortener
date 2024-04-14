@@ -8,7 +8,7 @@ services:
       - PYTHONUNBUFFERED=1
       - OMP_NUM_THREADS=1
     ports:
-      - "${DOCKER_IP:-127.0.0.1}:${URL_SHORTENER_BACKEND_PORT:-8810}:8810"
+      - 9000:9000
     restart: on-failure:5
     read_only: true
     mem_limit: ${MEMORY_LIMIT:-3000M}
